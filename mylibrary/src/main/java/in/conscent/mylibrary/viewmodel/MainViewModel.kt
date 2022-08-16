@@ -19,7 +19,7 @@ internal class MainViewModel @Inject constructor(private var repository: Network
     internal var searchLiveData = MutableLiveData<ArrayList<SearchResponseModel>?>()
     internal var categoryLiveData = MutableLiveData<CategoryResponse?>()
 
-    internal fun getSearchResponse(page: Int) {
+    internal  fun getSearchResponse(page: Int) {
         viewModelScope.launch(io_dispatcher) {
             when (val searchResponseModel = repository.getSearchData(page)) {
                 is GlobalNetResponse.Success -> {
