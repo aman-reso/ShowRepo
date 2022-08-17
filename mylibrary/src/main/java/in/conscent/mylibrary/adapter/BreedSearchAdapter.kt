@@ -1,18 +1,22 @@
 package `in`.conscent.mylibrary.adapter
 
 import `in`.conscent.mylibrary.R
+import `in`.conscent.mylibrary.Utility
 import `in`.conscent.mylibrary.models.SearchResponseModel
 import `in`.conscent.mylibrary.viewholders.SearchViewHolder
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.AsyncListUtil
 import androidx.recyclerview.widget.RecyclerView
 
-open class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
-    private var list = ArrayList<SearchResponseModel>()
+class BreedSearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
+    private var asyncListDiffer = AsyncListDiffer(this, Utility().diffUtil)
 
-    open fun submitList(list: ArrayList<SearchResponseModel>) {
-        this.list.addAll(list)
-        notifyDataSetChanged()
+    internal fun submitList(searchList: ArrayList<SearchResponseModel>) {
+        asyncListDiffer.submitList(searchList.map {
+            it.copy()
+        })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
@@ -21,12 +25,12 @@ open class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return asyncListDiffer.currentList.size
     }
 
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        val value = list[position]
+        val value = asyncListDiffer.currentList[position]
         holder.bindData(value)
     }
 }

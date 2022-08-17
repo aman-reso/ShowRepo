@@ -1,0 +1,4 @@
+
+dkotlin:S63096"@Functions returning "Flow" or "Channel" should not be suspending(˜ÞÅ†ùÿÿÿÿ8Ä×‘Üª0
+>kotlin:S1128"Remove this unused import.(Ô±ßàúÿÿÿÿ8Å×‘Üª0
+ikotlin:S63136"EClasses extending "ViewModel" should not expose suspending functions.(˜ÞÅ†ùÿÿÿÿ8Æ×‘Üª0

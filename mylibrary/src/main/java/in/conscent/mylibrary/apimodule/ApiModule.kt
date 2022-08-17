@@ -11,6 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -49,8 +50,10 @@ class ApiModule {
         httpClient.cache(cache)
         httpClient.connectTimeout(30, TimeUnit.SECONDS)
         httpClient.readTimeout(30, TimeUnit.SECONDS)
-
-        return httpClient.build()
+        val httpLogger = HttpLoggingInterceptor()
+        httpLogger.setLevel(HttpLoggingInterceptor.Level.BODY)
+        httpLogger.setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        return httpClient.addInterceptor(httpLogger).build()
     }
 
 

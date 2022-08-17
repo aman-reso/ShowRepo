@@ -14,7 +14,7 @@ abstract class AppConnectorImp( activity: WeakReference<AppCompatActivity?>?) {
 
     fun attachObserverForServerData(activity: AppCompatActivity) {
         mainViewModel?.apply {
-            searchLiveData.observe(activity) {
+            breedListLiveData.observe(activity) {
                 postSearchData(it)
             }
             categoryLiveData.observe(activity) {

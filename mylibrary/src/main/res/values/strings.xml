@@ -1,1 +1,5 @@
-<resources></resources>
+<resources>
+    <string name="search">Type breed</string>
+    <string name="search_result">Search Result</string>
+    <string name="cat_breed_list">Cat breed list</string>
+</resources>

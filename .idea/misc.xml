@@ -6,8 +6,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22291666666666668" />
         <entry key="mylibrary/src/main/res/drawable/drawable_corner.xml" value="0.159" />
         <entry key="mylibrary/src/main/res/drawable/rounded_8_with_border.xml" value="0.159" />
+        <entry key="mylibrary/src/main/res/layout/activity_display_category_list.xml" value="0.22291666666666668" />
         <entry key="mylibrary/src/main/res/layout/activity_seaarch.xml" value="0.20885416666666667" />
         <entry key="mylibrary/src/main/res/layout/activity_search.xml" value="0.22291666666666668" />
+        <entry key="mylibrary/src/main/res/layout/breed_list_activity.xml" value="0.22291666666666668" />
+        <entry key="mylibrary/src/main/res/layout/breed_search_activity.xml" value="0.22291666666666668" />
         <entry key="mylibrary/src/main/res/layout/custom_spinner_item.xml" value="0.22291666666666668" />
         <entry key="mylibrary/src/main/res/layout/search_item_holder.xml" value="0.22291666666666668" />
       </map>

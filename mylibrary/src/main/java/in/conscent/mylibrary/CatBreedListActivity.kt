@@ -1,10 +1,12 @@
 package `in`.conscent.mylibrary
 
-import `in`.conscent.mylibrary.adapter.SearchAdapter
-import `in`.conscent.mylibrary.databinding.ActivitySearchBinding
+import `in`.conscent.mylibrary.adapter.BreedListAdapter
+import `in`.conscent.mylibrary.databinding.BreedListActivityBinding
 import `in`.conscent.mylibrary.extensions.CustomSpinnerAdapter
+import `in`.conscent.mylibrary.extensions.PaginationScrollListener
 import `in`.conscent.mylibrary.models.CategoryResponse
 import `in`.conscent.mylibrary.viewmodel.MainViewModel
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -22,14 +24,14 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SearchActivity : AppCompatActivity() {
+class CatBreedListActivity : AppCompatActivity(), View.OnClickListener {
     //declare views variable
-    private var binding: ActivitySearchBinding? = null
+    private var binding: BreedListActivityBinding? = null
     private var recyclerView: RecyclerView? = null
     private var spinner: Spinner? = null
 
     //create object for RecyclerView adapter
-    private val searchAdapter: SearchAdapter by lazy { SearchAdapter() }
+    private val searchAdapter: BreedListAdapter by lazy { BreedListAdapter() }
     private val linearLayoutManager: LinearLayoutManager by lazy { LinearLayoutManager(this) }
 
     private val mainViewModel: MainViewModel? by viewModels()
@@ -37,12 +39,12 @@ class SearchActivity : AppCompatActivity() {
     //variable needed in case of paginated api response
     private var currentPage = 1
     private var isCurrentlyLoading: Boolean = true
-    private var totalPageCount = 10//no value received in api as totalPageCount
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_search)
+        binding = DataBindingUtil.setContentView(this, R.layout.breed_list_activity)
         initializeViews()
+        setUpClickListeners()
         setUpObservers(this)
         makeApiRequest()
     }
@@ -54,15 +56,21 @@ class SearchActivity : AppCompatActivity() {
             adapter = searchAdapter
             layoutManager = linearLayoutManager
         }
+        attachCustomScrollListener()
+    }
+
+    private fun setUpClickListeners() {
+        binding?.redirections?.setOnClickListener(this)
     }
 
     private fun createSpinner(categoryResponse: CategoryResponse) {
         val userSpinnerAdapter = CustomSpinnerAdapter(this, R.layout.custom_spinner_item, categoryResponse)
         spinner?.adapter = userSpinnerAdapter
+
         spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedItem = parent.selectedItem as CategoryResponse.CategoryResponseItem
-                Toast.makeText(this@SearchActivity, selectedItem.name, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@CatBreedListActivity, selectedItem.name, Toast.LENGTH_LONG).show()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -71,15 +79,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpObservers(searchActivity: SearchActivity) {
+    private fun setUpObservers(searchActivity: CatBreedListActivity) {
         mainViewModel?.apply {
-            this.searchLiveData.observe(searchActivity) {
-                isCurrentlyLoading = false;
-                if (it != null) {
+            this.breedListLiveData.observe(searchActivity) {
+                isCurrentlyLoading = false
+                showHidePgBar(false)
+                if (!it.isNullOrEmpty()) {
                     searchAdapter.submitList(it)
+                } else {
+                    isCurrentlyLoading = true
                 }
             }
-            this.categoryLiveData.observe(this@SearchActivity) {
+            this.categoryLiveData.observe(this@CatBreedListActivity) {
                 if (it != null) {
                     createSpinner(it)
                 }
@@ -97,53 +108,45 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getSearchResponse(page: Int) {
+        showHidePgBar(true)
         mainViewModel?.getSearchResponse(page)
     }
-}
 
-/**
- * private fun attachCustomScrollListener() {
-val paginationScrollListener = object : PaginationScrollListener(layoutManager = linearLayoutManager) {
-override fun loadMoreItems() {
-isCurrentlyLoading = true
-currentPage += 1
-getSearchResponse(currentPage)
-}
+    private fun attachCustomScrollListener() {
+        val paginationScrollListener = object : PaginationScrollListener(layoutManager = linearLayoutManager) {
+            override fun loadMoreItems() {
+                isCurrentlyLoading = true
+                currentPage += 1
+                getSearchResponse(currentPage)
+            }
 
-override fun isLastPage(): Boolean {
-return false
-}
+            override fun isLastPage(): Boolean {
+                return false
+            }
 
-override fun isLoading(): Boolean {
-return isCurrentlyLoading
-}
+            override fun isLoading(): Boolean {
+                return isCurrentlyLoading
+            }
 
-}
-recyclerView?.addOnScrollListener(paginationScrollListener)
-}
- */
+        }
+        recyclerView?.addOnScrollListener(paginationScrollListener)
+    }
 
-/**
- * made these things as commented because initially expect there will be
- * search api based on what keyword user has type
- *
- */
+    private fun showHidePgBar(canShow: Boolean) {
+        if (canShow) {
+            binding?.searchProgressbar?.visibility = View.VISIBLE
+        } else {
+            binding?.searchProgressbar?.visibility = View.GONE
+        }
+    }
 
-/**
- * private fun setUpListeners() {
-binding?.searchEditText?.customTextChangesListener()?.filterNot { it.isNullOrBlank() }
-?.debounce(DEBOUNCE_TIME_FOR_SEARCH)
-?.flatMapLatest {
-executeSearch(term = it.toString())
-}
-?.onEach { it ->
-//here is the result which will be displayed with the views
-}?.launchIn(lifecycleScope)
-}
-
-private suspend fun executeSearch(term: String): Flow<SearchResponseModel> {
-return flow {
+    override fun onClick(p0: View?) {
+        when (p0?.id) {
+            R.id.redirections -> {
+                val intent = Intent(this, SearchBreedActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
 
 }
-}
- */

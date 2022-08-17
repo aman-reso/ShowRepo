@@ -1,13 +1,13 @@
 package `in`.conscent.mylibrary.apimodule
 
 import `in`.conscent.mylibrary.models.GlobalNetResponse
-import kotlinx.coroutines.Dispatchers
+import `in`.conscent.mylibrary.viewmodel.io_dispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 
 suspend fun <T> safeApiCall(apiCall: suspend () -> T): GlobalNetResponse<T> {
-    return withContext(Dispatchers.IO) {
+    return withContext(io_dispatcher) {
         try {
             GlobalNetResponse.Success(apiCall.invoke())
         } catch (throwable: Throwable) {

@@ -14,15 +14,15 @@ interface NetworkInterface {
     @Headers("x-api-key:${AppConstants.API_SECRET_KEY}")
     suspend fun getAllCategories(): CategoryResponse
 
-    @GET("/v1/breeds?page=1&limit=1")
+    @GET("/v1/breeds")
     @Headers("x-api-key:${AppConstants.API_SECRET_KEY}")
     suspend fun getAllSearchResult(
         @Query("limit") limit: Int? = DEFAULT_PAGE_SIZE,
-        @Query("page") page: Int? = 1
+        @Query("page") page: Int
     ): ArrayList<SearchResponseModel>
+
+    @GET("/v1/breeds/search")
+    suspend fun getCatBreedBasedOnSearch(@Query("q") input:String?="sib"):ArrayList<SearchResponseModel>
+
 }
 
-fun getHeaders() {
-    val hashMap = HashMap<String, String>()
-    hashMap["x-api-key"] = AppConstants.API_SECRET_KEY
-}

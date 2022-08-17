@@ -40,10 +40,10 @@ class CustomSpinnerAdapter(// Your sent context
 
     // And here is when the "chooser" is popped up
     // Normally is the same view, but you can customize it if you want
-    override fun getDropDownView(position: Int, convertView: View, parent: ViewGroup): View {
-        val label = super.getDropDownView(position, convertView, parent) as TextView
-        label.setTextColor(Color.BLACK)
-        label.text = values[position].name
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View? {
+        val label = super.getDropDownView(position, convertView, parent) as? TextView?
+        label?.setTextColor(Color.BLACK)
+        label?.text = values[position].name
         return label
     }
 
